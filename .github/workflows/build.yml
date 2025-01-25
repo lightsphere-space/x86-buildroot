@@ -1,0 +1,84 @@
+name: Build and Release Buildroot for Raspberry Pi 400
+
+on:
+  push:
+    branches:
+      - main
+    # tags: # Trigger this workflow only when a tag is pushed
+    #   - "v*" # Example: v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+
+    steps:
+      # Step: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags
+
+      # Step: Create non existing directories
+      - name: Initialize environment
+        run: |
+          mkdir -p /home/runner/.buildroot-ccache
+          mkdir -p /home/runner/work/x86-buildroot/x86-buildroot/output/images
+          mkdir -p /home/runner/work/x86-buildroot/x86-buildroot/dl
+
+      # Step: Set up caching to speed up dependencies and the build process
+      - name: Cache CCache
+        uses: actions/cache@v3
+        with:
+          path: |
+			/home/runner/.buildroot-ccache
+			/home/runner/dl
+			/home/runner/output
+          key: buildroot-${{ hashFiles('**/config') }}
+          restore-keys: |
+            ${{ runner.os }}-buildroot-
+            buildroot-
+
+
+      # Step: Install dependencies for Buildroot
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential bison flex libncurses5-dev \
+            libssl-dev wget gawk git diffstat unzip texinfo bc ccache
+
+      # Step: Build the image
+      - name: Build Buildroot for Raspberry Pi 400
+        continue-on-error: true
+        run: |
+          make clean
+          make -s V=0
+
+      - name: Fetch all tags
+        run: |
+          git fetch --tags
+
+      - name: Get the latest tag on the branch
+        id: get-latest-tag
+        run: |
+          # Get the latest tag reachable from the branch
+          TAG=$(git describe --always --tags --abbrev=0)
+          echo "Latest tag: $TAG"
+          echo "tag=$TAG" >> $GITHUB_ENV
+
+      # Step: Upload the generated images to the release
+      - name: Upload Buildroot Image to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.tag }}
+          files: |
+            ./output/images/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: clean before cachincg
+        if: always()
+        run: |
+          make clean
+
