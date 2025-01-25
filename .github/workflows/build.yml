@@ -32,9 +32,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-			/home/runner/.buildroot-ccache
-			/home/runner/dl
-			/home/runner/output
+            /home/runner/.buildroot-ccache
+            /home/runner/dl
+            /home/runner/output
           key: buildroot-${{ hashFiles('**/config') }}
           restore-keys: |
             ${{ runner.os }}-buildroot-
