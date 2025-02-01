@@ -6,10 +6,11 @@
 ::respawn:/sbin/mingetty tty1
 ::respawn:/sbin/mingetty tty2
 
-# Using agetty on tty3 to tty6
-::respawn:/sbin/getty -L tty2 38400 vt100
-::respawn:/sbin/getty -L tty3 38400 vt100
-::respawn:/sbin/getty -L tty4 38400 vt100
+# Using agetty on tty3 to tty4
+::respawn:/sbin/agetty -L tty3 38400 vt100
+::respawn:/sbin/agetty -L tty4 38400 vt100
+
+# Using getty on tty5 to tty6
 ::respawn:/sbin/getty -L tty5 38400 vt100
 ::respawn:/sbin/getty -L tty6 38400 vt100
 
