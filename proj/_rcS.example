@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Mount necessary filesystems
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+
+# Set up networking (if applicable)
+ifconfig eth0 up
+udhcpc -i eth0
+
+# Any additional initialization commands
