@@ -1,19 +1,20 @@
+# System initialization
+::sysinit:/bin/busybox mount -t proc proc /proc
+::sysinit:/bin/busybox mount -t sysfs sysfs /sys
+::sysinit:/bin/busybox mount -t devtmpfs devtmpfs /dev
 ::sysinit:/etc/init.d/rcS
+
+# Serial console on ttyS0
 ::respawn:/sbin/getty -L ttyS0 115200 vt100
 
-# Added virtual terminals
-# Using mingetty on tty1 and tty2
-::respawn:/sbin/mingetty tty1
-::respawn:/sbin/mingetty tty2
+# Main console on tty1
+::respawn:/sbin/getty -L tty1 38400 linux
 
-# Using agetty on tty3 to tty4
-::respawn:/sbin/agetty -L tty3 38400 vt100
-::respawn:/sbin/agetty -L tty4 38400 vt100
+# Other ttys
+::respawn:/sbin/getty -L tty2 38400 linux
+::respawn:/sbin/getty -L tty3 38400 linux
+::respawn:/sbin/getty -L tty4 38400 linux
 
-# Using getty on tty5 to tty6
-::respawn:/sbin/getty -L tty5 38400 vt100
-::respawn:/sbin/getty -L tty6 38400 vt100
-
-
+# Shutdown actions
 ::shutdown:/bin/umount -a -r
 ::restart:/sbin/init
