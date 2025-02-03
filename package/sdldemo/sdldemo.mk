@@ -13,7 +13,7 @@ SDLDEMO_DEPENDENCIES = sdl2
 define SDLDEMO_BUILD_CMDS
     # TODO: remove comments
     # (cd $(@D) && $(SHELL) $(SDLDEMO_DL_DIR)/$($(PKG)_SOURCE))
-    # cp -f package/sdldemo/Makefile $(@D)
+    cp -f package/sdldemo/Makefile $(@D)
     $(MAKE) CC="$(TARGET_CC)" CXX="$(TARGET_CXX)" -C $(@D)
 endef
 
