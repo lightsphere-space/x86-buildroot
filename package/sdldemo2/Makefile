@@ -1,41 +1,37 @@
-################################################################################
-#
-# SDLDEMO2 Buildroot Package
-#
-################################################################################
+# Compiler
 
-# Version and source location (in this case, using the local directory)
-SDLDEMO2_VERSION = 1.0
-SDLDEMO2_SITE = $(BR2_EXTERNAL)/package/SDLDEMO2
-SDLDEMO2_SITE_METHOD = local
 
-# Dependencies
-SDLDEMO2_DEPENDENCIES = sdl2
+# Compiler Flags
+# CFLAGS_CUSTOM = -Wall -g -I./include -I. $(shell sdl2-config --cflags)
 
-# Source files
-SDLDEMO2_SRC_FILES = main.c
+# Linker Flags
+# LDLIBS = -lglfw -lGLESv2
+LDLIBS = -lSDL2 -lSDL2_image -lm -ldl
+# -lSDL2
 
-# Object files
-SDLDEMO2_OBJS = $(SDLDEMO2_SRC_FILES:.c=.o)
+# Source Files
+SRCS = main.c
 
-# Executable name
-SDLDEMO2_EXEC = demo_app
+# Object Files
+OBJS = $(SRCS:.c=.o)
 
-# Build the package
-define SDLDEMO2_BUILD_CMDS
-    $(TARGET_CC) $(TARGET_CFLAGS) -I$(SRCDIR)/include -I$(SRCDIR) $(shell sdl2-config --cflags) -c $(SDLDEMO2_SRC_FILES) -o $(SDLDEMO2_OBJS)
-    $(TARGET_CC) $(SDLDEMO2_OBJS) $(shell sdl2-config --libs) -lSDL2_image -lglfw -lGLESv2 -lm -ldl -o $(SDLDEMO2_EXEC)
-endef
+# Executable Name
+EXEC = sdldemo2
 
-# Install the executable
-define SDLDEMO2_INSTALL_TARGET_CMDS
-    $(INSTALL) -D $(SDLDEMO2_EXEC) $(TARGET_DIR)/usr/bin/$(SDLDEMO2_EXEC)
-endef
+# Default Target
+all: $(EXEC)
 
-# Clean the build
-define SDLDEMO2_CLEAN_CMDS
-    rm -f $(SDLDEMO2_OBJS) $(SDLDEMO2_EXEC)
-endef
+# Link Object Files to Create Executable
+$(EXEC): $(OBJS)
+	$(CC) $(LDLAGS) $(OBJS) -o $(EXEC) $(LDLIBS)
 
-# Register the package
-$(eval $(generic-package))
+# Compile Source Files to Object Files
+%.o: %.c
+	$(CC) $(CFLAGS) $(CFLAGS_CUSTOM) -c $< -o $@
+
+# Clean Target
+clean:
+	rm -f $(OBJS) $(EXEC)
+
+# Phony Targets
+.PHONY: all clean
