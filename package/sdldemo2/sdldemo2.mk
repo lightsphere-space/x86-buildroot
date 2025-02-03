@@ -5,7 +5,7 @@
 ################################################################################
 
 SDLDEMO2_VERSION = 1.0
-SDLDEMO2_SITE = $(BR2_EXTERNAL)/package/sdldemo2
+SDLDEMO2_SITE = package/sdldemo2
 SDLDEMO2_SITE_METHOD = local
 
 SDLDEMO2_DEPENDENCIES = sdl2
