@@ -45,7 +45,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential bison flex libncurses5-dev \
-            libssl-dev wget gawk git diffstat unzip texinfo bc ccache util-linux
+            libssl-dev wget gawk git diffstat unzip texinfo bc ccache util-linux \
+            elfutils libelf-dev
 
       # Step: Build the image
       - name: Build Buildroot for Raspberry Pi 400
