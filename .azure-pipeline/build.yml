@@ -1,0 +1,61 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  VM_NAME: 'myVM'
+  RESOURCE_GROUP: 'myResourceGroup'
+  LOCATION: 'eastus'
+  IMAGE: 'Canonical:UbuntuServer:18.04-LTS:latest'
+  ADMIN_USERNAME: 'azureuser'
+  ADMIN_PASSWORD: 'P@ssw0rd1234' # Use a secure method to store such sensitive data
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '<Your Azure Subscription>'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      # Create a resource group
+      az group create --name $(RESOURCE_GROUP) --location $(LOCATION)
+
+      # Create a virtual machine
+      az vm create \
+        --resource-group $(RESOURCE_GROUP) \
+        --name $(VM_NAME) \
+        --image $(IMAGE) \
+        --admin-username $(ADMIN_USERNAME) \
+        --admin-password $(ADMIN_PASSWORD) \
+        --output json
+
+      # Open necessary ports
+      az vm open-port --port 22 --resource-group $(RESOURCE_GROUP) --name $(VM_NAME)
+
+      # Install necessary software on the VM
+      az vm run-command invoke \
+        --command-id RunShellScript \
+        --name $(VM_NAME) \
+        --resource-group $(RESOURCE_GROUP) \
+        --scripts "sudo apt-get update && sudo apt-get install -y build-essential libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-gfx-dev mesa-utils"
+
+      # Download and extract the latest release of x86-buildroot
+      LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/lightsphere-space/x86-buildroot/releases/latest | grep "tarball_url" | cut -d : -f 2,3 | tr -d \")
+      wget $LATEST_RELEASE_URL -O latest_release.tar.gz
+      tar -xzf latest_release.tar.gz -C /home/$(ADMIN_USERNAME)
+
+      # Run the SDL application using the software renderer (llvmpipe)
+      az vm run-command invoke \
+        --command-id RunShellScript \
+        --name $(VM_NAME) \
+        --resource-group $(RESOURCE_GROUP) \
+        --scripts "cd /home/$(ADMIN_USERNAME)/x86-buildroot && LIBGL_ALWAYS_SOFTWARE=1 ./path/to/your/sdl_application"
+
+- script: echo "Pipeline completed!"
