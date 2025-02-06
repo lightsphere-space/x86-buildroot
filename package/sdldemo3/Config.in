@@ -1,0 +1,5 @@
+config BR2_PACKAGE_SDLDEMO3
+    bool "sdldemo3"
+    depends on BR2_PACKAGE_SDL2
+    help
+      An SDL program for Buildroot.
