@@ -9,3 +9,14 @@ if [ -e ${TARGET_DIR}/etc/inittab ]; then
 	sed -i '/GENERIC_SERIAL/a\
 tty1::respawn:/sbin/getty -L  tty1 0 vt100 # QEMU graphical window' ${TARGET_DIR}/etc/inittab
 fi
+
+# Create /dev/fusion devices
+mkdir -p ${TARGET_DIR}/dev
+mknod -m 666 ${TARGET_DIR}/dev/fusion c 10 62
+
+# Set up to boot directly into sdldemo2
+cat <<EOF > ${TARGET_DIR}/etc/init.d/S99sdldemo2
+#!/bin/sh
+exec /usr/bin/sdldemo2
+EOF
+chmod +x ${TARGET_DIR}/etc/init.d/S99sdldemo2
