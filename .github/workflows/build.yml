@@ -26,6 +26,7 @@ jobs:
           mkdir -p /home/runner/.buildroot-ccache
           mkdir -p /home/runner/work/x86-buildroot/x86-buildroot/output/images
           mkdir -p /home/runner/work/x86-buildroot/x86-buildroot/dl
+          mkdir -p /home/runner/work/x86-buildroot/x86-buildroot/output/target/usr/libexec/
 
       # Step: Set up caching to speed up dependencies and the build process
       - name: Cache CCache
@@ -34,7 +35,7 @@ jobs:
           path: |
             /home/runner/.buildroot-ccache
             /home/runner/dl
-            /home/runner/output
+            /home/runner/output            
           key: buildroot-${{ hashFiles('**/config') }}
           restore-keys: |
             ${{ runner.os }}-buildroot-
@@ -53,6 +54,7 @@ jobs:
         continue-on-error: true
         run: |
           make clean
+          mkdir -p /home/runner/work/x86-buildroot/x86-buildroot/output/target/usr/libexec/
           make BR2_DEFCONFIG=proj/buildroot.config defconfig
           make -s V=0
 
