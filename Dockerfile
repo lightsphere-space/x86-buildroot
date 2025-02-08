@@ -15,6 +15,11 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p /workspace/output/target/usr/libexec/
 
+# Use cached directories
+VOLUME /workspace/.buildroot-ccache
+VOLUME /workspace/dl
+VOLUME /workspace/output
+
 # Build the image
 RUN make clean && \
     make BR2_DEFCONFIG=proj/buildroot.config defconfig && \

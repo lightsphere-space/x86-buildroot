@@ -31,6 +31,33 @@ jobs:
           restore-keys: |
             buildx-
 
+      # Step: Cache ccache directory
+      - name: Cache ccache directory
+        uses: actions/cache@v3
+        with:
+          path: /workspace/.buildroot-ccache
+          key: ccache-${{ hashFiles('**/config') }}
+          restore-keys: |
+            ccache-
+
+      # Step: Cache download directory
+      - name: Cache download directory
+        uses: actions/cache@v3
+        with:
+          path: /workspace/dl
+          key: download-${{ hashFiles('**/config') }}
+          restore-keys: |
+            download-
+
+      # Step: Cache output directory
+      - name: Cache output directory
+        uses: actions/cache@v3
+        with:
+          path: /workspace/output
+          key: output-${{ hashFiles('**/config') }}
+          restore-keys: |
+            output-
+
       # Step: Build the Docker image
       - name: Build Docker image
         run: |
