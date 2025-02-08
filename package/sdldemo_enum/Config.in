@@ -1,4 +1,4 @@
-config BR2_PACKAGE_SDLDEMO2
+config BR2_PACKAGE_SDLDEMO_ENUM
     bool "sdldemo_enum"
     depends on BR2_PACKAGE_SDL2
     help
