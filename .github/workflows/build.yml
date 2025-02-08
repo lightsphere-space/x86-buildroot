@@ -58,6 +58,9 @@ jobs:
           make BR2_DEFCONFIG=proj/buildroot.config defconfig
           make -s V=0
 
+      - name: Print output target directory size
+        run: du -sh /home/runner/work/x86-buildroot/x86-buildroot/output/target
+
       - name: Fetch all tags
         run: |
           git fetch --tags

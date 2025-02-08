@@ -74,6 +74,9 @@ jobs:
                               --tag buildroot:latest \
                               --build-context default=/workspace .
 
+      - name: Print output target directory size
+        run: du -sh /workspace/output/target
+
       # Step: Save the cache
       - name: Save cache
         if: always()
