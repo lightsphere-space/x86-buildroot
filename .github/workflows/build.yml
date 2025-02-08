@@ -3,7 +3,7 @@ name: Build and Release Buildroot for Raspberry Pi 400
 on:
   push:
     branches:
-      - main
+      - X
     # tags: # Trigger this workflow only when a tag is pushed
     #   - "v*" # Example: v1.0.0
 
