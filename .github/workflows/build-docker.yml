@@ -1,0 +1,70 @@
+name: Build and Release Buildroot with Docker Buildx
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+
+    steps:
+      # Step: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Step: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step: Cache Docker layers
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-${{ github.sha }}
+          restore-keys: |
+            buildx-
+
+      # Step: Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache \
+                              --cache-to=type=local,dest=/tmp/.buildx-cache-new \
+                              --output=type=docker \
+                              --tag buildroot:latest .
+
+      # Step: Save the cache
+      - name: Save cache
+        if: always()
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      # Step: Fetch all tags
+      - name: Fetch all tags
+        run: |
+          git fetch --tags
+
+      # Step: Get the latest tag on the branch
+      - name: Get the latest tag on the branch
+        id: get-latest-tag
+        run: |
+          TAG=$(git describe --always --tags --abbrev=0)
+          echo "Latest tag: $TAG"
+          echo "tag=$TAG" >> $GITHUB_ENV
+
+      # Step: Upload the generated images to the release
+      - name: Upload Buildroot Image to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.tag }}
+          files: |
+            ./output/images/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
