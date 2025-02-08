@@ -72,7 +72,7 @@ jobs:
                               --cache-to=type=local,dest=/tmp/.buildx-cache-new \
                               --output=type=docker \
                               --tag buildroot:latest \
-                              --build-context /workspace .
+                              --build-context=/workspace .
 
       # Step: Save the cache
       - name: Save cache
