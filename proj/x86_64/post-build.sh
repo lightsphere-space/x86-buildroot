@@ -22,6 +22,6 @@ mknod /dev/fusion/2 c 250 2
 # Set up to boot directly into sdldemo2
 cat <<EOF > ${TARGET_DIR}/etc/init.d/S99sdldemo2
 #!/bin/sh
-exec /usr/bin/sdldemo2
+exec /usr/bin/sdldemo2 || /sbin/getty -L tty1 0 vt100
 EOF
 chmod +x ${TARGET_DIR}/etc/init.d/S99sdldemo2
