@@ -14,6 +14,10 @@ fi
 # mkdir -p ${TARGET_DIR}/dev
 # chroot ${TARGET_DIR} /bin/busybox mdev -s
 # chroot ${TARGET_DIR} /bin/busybox mknod -m 666 /dev/fusion c 10 62
+mkdir -p /dev/fusion
+mknod /dev/fusion/0 c 250 0
+mknod /dev/fusion/1 c 250 1
+mknod /dev/fusion/2 c 250 2
 
 # Set up to boot directly into sdldemo2
 cat <<EOF > ${TARGET_DIR}/etc/init.d/S99sdldemo2
