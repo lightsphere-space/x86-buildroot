@@ -62,7 +62,7 @@ jobs:
       - name: Increase available disk space
         run: |
           sudo mkdir -p /mnt/extra-space
-          sudo mount -t tmpfs -o size=32G tmpfs /mnt/extra-space
+          sudo mount -t tmpfs -o size=48G tmpfs /mnt/extra-space
           sudo ln -s /mnt/extra-space /workspace
 
       # Step: Build the Docker image
