@@ -58,13 +58,21 @@ jobs:
           restore-keys: |
             output-
 
+      # Step: Increase available disk space
+      - name: Increase available disk space
+        run: |
+          sudo mkdir -p /mnt/extra-space
+          sudo mount -t tmpfs -o size=20G tmpfs /mnt/extra-space
+          sudo ln -s /mnt/extra-space /workspace
+
       # Step: Build the Docker image
       - name: Build Docker image
         run: |
           docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache \
                               --cache-to=type=local,dest=/tmp/.buildx-cache-new \
                               --output=type=docker \
-                              --tag buildroot:latest .
+                              --tag buildroot:latest \
+                              --build-context /workspace .
 
       # Step: Save the cache
       - name: Save cache
