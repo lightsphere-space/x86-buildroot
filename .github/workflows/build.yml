@@ -55,7 +55,7 @@ jobs:
         run: |
           make clean
           mkdir -p /home/runner/work/x86-buildroot/x86-buildroot/output/target/usr/libexec/
-          make BR2_DEFCONFIG=proj/buildroot.config defconfig
+          make BR2_DEFCONFIG=proj/buildroot_arm.config defconfig
           make -s V=0
 
       - name: Print output target directory size
