@@ -3,7 +3,7 @@ name: Build and Release Buildroot with Docker Buildx
 on:
   push:
     branches:
-      - main
+      - X
 
 jobs:
   build:
